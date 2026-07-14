@@ -1,0 +1,30 @@
+{
+  "name": "@hatewx/plugin-english-improver",
+  "version": "0.1.0",
+  "description": "English writing improvement plugin packaged for Omni harness installation.",
+  "type": "module",
+  "files": [
+    "agents/",
+    "commands/",
+    "hooks/",
+    "skills/",
+    "src/",
+    "opencode-plugin.ts",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "echo 'no build needed'",
+    "test": "node skills.test.mjs"
+  },
+  "omni": {
+    "type": "plugin",
+    "capabilities": [
+      "english-improver"
+    ],
+    "dependencies": {},
+    "devDependencies": {}
+  }
+}
+

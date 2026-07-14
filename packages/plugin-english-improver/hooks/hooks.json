@@ -1,0 +1,17 @@
+{
+  "description": "English Improver hook - checks English grammar on every user prompt via LLM call",
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bun /Users/EM/Work/code/magic/modules/llm-cli-plugins/english-improver/hooks/scripts/check-english.ts",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

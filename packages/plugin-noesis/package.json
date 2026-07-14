@@ -1,0 +1,27 @@
+{
+  "name": "@hatewx/plugin-noesis",
+  "version": "0.1.0",
+  "description": "Noesis knowledge workflows for collecting, digesting, and retrieving knowledge.",
+  "type": "module",
+  "files": [
+    "agents/",
+    "skills/",
+    "package.json",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "echo 'no build needed'",
+    "test": "node skills.test.mjs"
+  },
+  "omni": {
+    "type": "plugin",
+    "capabilities": [
+      "noesis-collect",
+      "noesis-digest",
+      "noesis-retrieval-reflex"
+    ],
+    "dependencies": {},
+    "devDependencies": {}
+  }
+}
+
