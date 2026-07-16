@@ -1,4 +1,4 @@
-# @hatewx/plugin-english-improver
+# @in404/plugin-english-improver
 
 Omni plugin package for the `english-improver` writing assistant.
 
@@ -11,4 +11,3 @@ Source adapted from:
 ## Skills
 
 - `english-improver` — improve English writing with grammar corrections and native-speaker suggestions.
-

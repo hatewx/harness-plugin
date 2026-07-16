@@ -4,8 +4,8 @@ Omni-based plugin collection for reusable agent capabilities across harnesses.
 
 ## Packages
 
-- `@hatewx/plugin-noesis` — Noesis knowledge workflows, including `collect`, `digest`, and `retrieval-reflex`.
-- `@hatewx/plugin-english-improver` — English writing improvement skill and related hook/command assets adapted from `english-improver`.
+- `@in404/plugin-noesis` — Noesis knowledge workflows, including `collect`, `digest`, and `retrieval-reflex`.
+- `@in404/plugin-english-improver` — English writing improvement skill and related hook/command assets adapted from `english-improver`.
 
 ## Omni Layout
 
@@ -38,4 +38,3 @@ omni install \
   --harness claude,codex \
   --scope project
 ```
-

@@ -1,5 +1,5 @@
 {
-  "name": "@hatewx/harness-plugin",
+  "name": "@in404/harness-plugin",
   "version": "0.1.0",
   "private": true,
   "workspaces": [
@@ -13,4 +13,3 @@
     "typescript": "^5.9.3"
   }
 }
-

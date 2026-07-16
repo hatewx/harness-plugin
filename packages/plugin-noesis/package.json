@@ -1,5 +1,5 @@
 {
-  "name": "@hatewx/plugin-noesis",
+  "name": "@in404/plugin-noesis",
   "version": "0.1.0",
   "description": "Noesis knowledge workflows for collecting, digesting, and retrieving knowledge.",
   "type": "module",
@@ -24,4 +24,3 @@
     "devDependencies": {}
   }
 }
-

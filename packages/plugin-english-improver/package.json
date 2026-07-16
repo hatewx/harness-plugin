@@ -1,5 +1,5 @@
 {
-  "name": "@hatewx/plugin-english-improver",
+  "name": "@in404/plugin-english-improver",
   "version": "0.1.0",
   "description": "English writing improvement plugin packaged for Omni harness installation.",
   "type": "module",
@@ -27,4 +27,3 @@
     "devDependencies": {}
   }
 }
-
