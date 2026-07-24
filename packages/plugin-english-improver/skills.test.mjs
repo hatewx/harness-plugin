@@ -17,6 +17,10 @@ const hooks = JSON.parse(fs.readFileSync(hooksPath, "utf8"));
 const hookCommand = hooks.hooks.UserPromptSubmit[0].hooks[0].command;
 assert.match(hookCommand, /\$\{CLAUDE_PLUGIN_ROOT\}\/hooks\/scripts\/check-english\.ts/);
 
+const commandContent = fs.readFileSync(path.join(root, "commands", "en-improver.md"), "utf8");
+assert.match(commandContent, /final response must be raw JSON/);
+assert.match(commandContent, /corrected_versions/);
+
 for (const entry of fs.readdirSync(skillsDir, { withFileTypes: true })) {
   if (!entry.isDirectory()) continue;
   const skillFile = path.join(skillsDir, entry.name, "SKILL.md");
