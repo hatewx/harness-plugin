@@ -7,7 +7,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bun \"$PLUGIN_ROOT/hooks/scripts/check-english.ts\"",
+            "command": "bun \"${CLAUDE_PLUGIN_ROOT}/hooks/scripts/check-english.ts\"",
             "timeout": 15
           }
         ]

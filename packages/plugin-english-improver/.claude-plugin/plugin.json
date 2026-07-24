@@ -1,0 +1,11 @@
+{
+  "name": "english-improver",
+  "version": "0.1.0",
+  "description": "An English education expert that helps improve English writing with grammar corrections and native speaker suggestions, should be used when the user prompt is a English sentence more than 2 words",
+  "author": {
+    "name": "in404",
+    "email": "m@in404.com"
+  },
+  "keywords": ["english", "language", "grammar", "education", "writing"],
+  "license": "MIT"
+}
