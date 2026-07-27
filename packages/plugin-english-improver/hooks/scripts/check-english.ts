@@ -325,8 +325,7 @@ const main = async () => {
     raw = await readStdin()
     if (raw.trim()) input = JSON.parse(raw)
   } catch {
-    // process.stdout.write("{}")
-    process.exit(0)
+    return
   }
 
   // Debug: log the raw input and working directory
@@ -336,8 +335,7 @@ const main = async () => {
   const prompt = input.user_prompt ?? input.prompt ?? ""
 
   if (!shouldImprove(prompt)) {
-    // process.stdout.write("{}")
-    process.exit(0)
+    return
   }
 
   log("check-english-content", { content: prompt })
@@ -349,10 +347,8 @@ const main = async () => {
     } else {
       process.stdout.write("{}")
     }
-    process.exit(0)
   } catch (err) {
     log("check-english-error", { message: String(err) })
-    process.exit(0)
   }
 }
 
