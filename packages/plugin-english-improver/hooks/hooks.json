@@ -1,5 +1,5 @@
 {
-  "description": "English Improver hook - checks English grammar on every user prompt via LLM call",
+  "description": "English Improver hook - checks predominantly English prompts and adapts output to the active harness",
   "hooks": {
     "UserPromptSubmit": [
       {

@@ -17,7 +17,7 @@
   ],
   "scripts": {
     "build": "echo 'no build needed'",
-    "test": "node skills.test.mjs"
+    "test": "node skills.test.mjs && node prompt-policy.test.mjs"
   },
   "omni": {
     "type": "plugin",

@@ -13,6 +13,7 @@
 import { readFileSync, appendFileSync, existsSync, writeFileSync } from "fs"
 import { fileURLToPath } from "url"
 import { join } from "path"
+import { detectHarness, formatHookOutput, isMainlyEnglish } from "./prompt-policy.mjs"
 
 // Find package root by traversing up from current module
 const dir = fileURLToPath(new URL(".", import.meta.url))
@@ -34,17 +35,7 @@ const log = (msg: string, data?: object) => {
 
 // 判断是否需要检查英文
 export const shouldImprove = (message: string): boolean => {
-  if (!message || message.trim().length < 3) return false
-  if (message.trim().startsWith("/")) return false
-  if (message.trim().startsWith('"')) return false
-
-  const chineseChars = (message.match(/[\u4e00-\u9fff]/g) || []).length
-  if (chineseChars > 3) return false
-
-  const codeIndicators = (message.match(/[{}();[\]]/g) || []).length
-  if (codeIndicators > message.length * 0.1) return false
-
-  return /[a-zA-Z]{3,}/.test(message)
+  return isMainlyEnglish(message)
 }
 
 export const getSkillPrompt = (): string => {
@@ -342,11 +333,7 @@ const main = async () => {
 
   try {
     const suggestion = await checkEnglish(prompt)
-    if (suggestion?.trim()) {
-      process.stdout.write(JSON.stringify({ systemMessage: `\n${suggestion}` }))
-    } else {
-      process.stdout.write("{}")
-    }
+    process.stdout.write(JSON.stringify(formatHookOutput(suggestion, detectHarness())))
   } catch (err) {
     log("check-english-error", { message: String(err) })
   }
