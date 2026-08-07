@@ -9,12 +9,10 @@ assert.equal(isMainlyEnglish("const answer = foo();"), false);
 assert.deepEqual(formatHookOutput("How are you?", "claude"), {
   systemMessage: "\nHow are you?",
 });
-assert.deepEqual(formatHookOutput("How are you?", "codex"), {
-  hookSpecificOutput: {
-    hookEventName: "UserPromptSubmit",
-    additionalContext: "How are you?",
-  },
-});
+const codexOutput = formatHookOutput("How are you?", "codex");
+assert.equal(codexOutput.hookSpecificOutput.hookEventName, "UserPromptSubmit");
+assert.match(codexOutput.hookSpecificOutput.additionalContext, /must begin/i);
+assert.match(codexOutput.hookSpecificOutput.additionalContext, /How are you\?/);
 
 assert.equal(detectHarness({ ENGLISH_IMPROVER_HARNESS: "codex" }), "codex");
 assert.equal(detectHarness({ PLUGIN_ROOT: "/tmp/plugin" }), "codex");
