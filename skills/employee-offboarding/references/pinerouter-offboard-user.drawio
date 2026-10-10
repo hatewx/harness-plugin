@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="员工离职 Key 清理" id="offboard">
+    <mxGraphModel page="1" pageWidth="1100" pageHeight="1500">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="start" value="前置：停用员工登录权限&#10;输入 username 或 userid" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="30" width="300" height="60" />
+        </mxCell>
+        <mxCell id="input" value="已指定 userid？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="440" y="130" width="200" height="80" />
+        </mxCell>
+        <mxCell id="source" value="默认 soulforge 查询&#10;或显式 --local-mapping 查询历史 CSV" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="250" width="320" height="70" />
+        </mxCell>
+        <mxCell id="unique" value="唯一匹配 userid？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="120" y="370" width="200" height="80" />
+        </mxCell>
+        <mxCell id="scan" value="分页搜索 PineRouter /key/list&#10;user_id=&lt;userid&gt;&#10;substring_matching=true；完整对象" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="510" width="300" height="70" />
+        </mxCell>
+        <mxCell id="owner" value="核对 key.user_id 包含 userid&#10;不区分大小写，覆盖所有前后缀&#10;收集 token/hash" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="630" width="300" height="90" />
+        </mxCell>
+        <mxCell id="mode" value="--execute 且有待删 Key？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="430" y="770" width="220" height="80" />
+        </mxCell>
+        <mxCell id="preview" value="输出 userid、数量&#10;预览或无 Key，结束" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="790" y="775" width="250" height="70" />
+        </mxCell>
+        <mxCell id="delete" value="按 100 个一批 POST /key/delete&#10;携带操作者审计头" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="910" width="300" height="70" />
+        </mxCell>
+        <mxCell id="verify" value="重新分页搜索并匹配&#10;是否还有归属 Key？" style="rhombus;whiteSpace=wrap;html=1;fillColor=#fff2cc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="430" y="1040" width="220" height="80" />
+        </mxCell>
+        <mxCell id="done" value="无残留：报告完成" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="390" y="1190" width="300" height="60" />
+        </mxCell>
+        <mxCell id="fail" value="停止并返回失败&#10;身份歧义 / 接口异常 / 归属冲突&#10;或残留：排查后可重跑" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;" vertex="1" parent="1">
+          <mxGeometry as="geometry" x="60" y="1040" width="300" height="100" />
+        </mxCell>
+        <mxCell id="e0" value="" source="start" target="input" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e1" value="是" source="input" target="scan" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e2" value="否" source="input" target="source" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e3" value="" source="source" target="unique" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e4" value="是" source="unique" target="scan" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e5" value="否" source="unique" target="fail" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e6" value="全部页读取完成" source="scan" target="owner" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e7" value="字段匹配" source="owner" target="mode" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e8" value="响应异常" source="owner" target="fail" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e9" value="否" source="mode" target="preview" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e10" value="是" source="mode" target="delete" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e11" value="成功" source="delete" target="verify" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e12" value="失败" source="delete" target="fail" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e13" value="否" source="verify" target="done" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="e14" value="是" source="verify" target="fail" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;rounded=0;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

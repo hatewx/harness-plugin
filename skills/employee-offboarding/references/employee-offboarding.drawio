@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='utf-8'?>
+<mxfile host="app.diagrams.net">
+  <diagram name="员工离职总流程" id="employee-offboarding">
+    <mxGraphModel page="1" pageWidth="1100" pageHeight="1450">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="start" value="前置：停用员工登录&#10;输入员工姓名" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="350" y="20" width="340" height="60" />
+        </mxCell>
+        <mxCell id="identity" value="飞书视图：唯一精确姓名 → 邮箱&#10;总流程：soulforge / 历史映射 → userid" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="350" y="120" width="340" height="80" />
+        </mxCell>
+        <mxCell id="preflight" value="全部只读预检&#10;Cursor 成员状态；PineRouter Key 数量&#10;认证失败则停止，尚未写入" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="350" y="250" width="340" height="90" />
+        </mxCell>
+        <mxCell id="execute" value="显式 --execute？" vertex="1" parent="1" style="rhombus;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="420" y="390" width="200" height="90" />
+        </mxCell>
+        <mxCell id="preview" value="仅输出预览&#10;不修改任何外部系统" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="780" y="400" width="270" height="70" />
+        </mxCell>
+        <mxCell id="recheck" value="重新核对飞书姓名、邮箱、记录 ID" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="350" y="520" width="340" height="70" />
+        </mxCell>
+        <mxCell id="pine" value="总入口：删除 PineRouter Key 并复查&#10;Cursor 单项入口跳过此步" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="350" y="640" width="340" height="80" />
+        </mxCell>
+        <mxCell id="cursor" value="按邮箱移除 Cursor 团队成员&#10;已移除则跳过；重新查询确认无有效成员" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="350" y="770" width="340" height="90" />
+        </mxCell>
+        <mxCell id="verify" value="总入口：再次复查 PineRouter 无 Key" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="350" y="910" width="340" height="70" />
+        </mxCell>
+        <mxCell id="status" value="更新飞书状态为「已离职」&#10;再次读取验证" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="350" y="1030" width="340" height="80" />
+        </mxCell>
+        <mxCell id="done" value="报告完成" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="350" y="1160" width="340" height="60" />
+        </mxCell>
+        <mxCell id="failure" value="失败：停止，不回写完成状态&#10;执行中失败可能已完成前面步骤&#10;核对后可重跑" vertex="1" parent="1" style="rounded=1;whiteSpace=wrap;html=1;fillColor=#dae8fc;">
+          <mxGeometry as="geometry" x="20" y="800" width="270" height="110" />
+        </mxCell>
+        <mxCell id="edge0" source="start" target="identity" value="" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge1" source="identity" target="preflight" value="" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge2" source="preflight" target="execute" value="通过" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge3" source="execute" target="preview" value="否" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge4" source="execute" target="recheck" value="是" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge5" source="recheck" target="pine" value="" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge6" source="pine" target="cursor" value="成功" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge7" source="cursor" target="verify" value="确认" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge8" source="verify" target="status" value="无残留" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge9" source="status" target="done" value="验证成功" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge10" source="preflight" target="failure" value="失败" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge11" source="pine" target="failure" value="失败" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge12" source="cursor" target="failure" value="失败" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+        <mxCell id="edge13" source="status" target="failure" value="失败" edge="1" parent="1" style="edgeStyle=orthogonalEdgeStyle;html=1;endArrow=block;">
+          <mxGeometry as="geometry" relative="1" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

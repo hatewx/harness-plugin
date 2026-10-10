@@ -1,0 +1,4 @@
+interface:
+  display_name: "员工离职处理"
+  short_description: "核对并清理 PineRouter 与 Cursor 员工权限"
+  default_prompt: "使用 $employee-offboarding 处理指定员工的离职权限清理。"
