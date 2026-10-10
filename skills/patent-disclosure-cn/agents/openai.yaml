@@ -1,0 +1,4 @@
+interface:
+  display_name: "中国专利交底书"
+  short_description: "将发明材料蒸馏为事实可追溯、可交代理审核的中国专利交底书"
+  default_prompt: "使用 $patent-disclosure-cn 把我的发明想法整理成可交中国专利代理师审核的交底书。"
