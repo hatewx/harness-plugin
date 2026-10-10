@@ -1,0 +1,4 @@
+interface:
+  display_name: "研发经营月报"
+  short_description: "按技术线、产品体系和部门周报证据撰写可核验的研发经营月报"
+  default_prompt: "Use $write-rd-monthly-report to draft or revise the monthly R&D operating report from verified weekly evidence."
