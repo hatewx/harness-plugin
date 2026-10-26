@@ -9,6 +9,7 @@ Omni-based plugin collection for reusable agent capabilities across harnesses.
 
 ## Standalone Skills
 
+- `pinerouter-approval-fulfillment` — 按已通过的飞书预算审批登记记录、复用或创建 PineRouter 项目并生成 Key，完整预演并确认后执行。
 - `patent-disclosure-cn` — Evidence-traceable Chinese invention and utility-model disclosure drafting for inventor–AI–patent-agent collaboration.
 - `employee-offboarding` — Verify and clean up employee access in PineRouter and Cursor, with identity checks and safe handling of missing accounts.
 - `write-rd-monthly-report` — Evidence-based R&D operating monthly reports organized by technical tracks and product mappings.

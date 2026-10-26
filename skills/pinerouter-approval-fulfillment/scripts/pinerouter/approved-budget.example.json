@@ -1,0 +1,18 @@
+{
+  "project": "模型评测",
+  "teamId": "<existing-pinerouter-team-id>",
+  "projectType": "技术项目",
+  "description": "自动评测模型效果",
+  "budget": 3000,
+  "gatewayBudgetUsd": 420,
+  "budgetStartAt": "2026-08-01",
+  "budgetEndAt": "2026-08-31",
+  "budgetResetCycle": "月",
+  "models": ["gpt-5.5", "qwen3"],
+  "overflowPolicy": "禁止调用",
+  "tpm": 1000,
+  "rpm": 60,
+  "technicalOwnerOpenId": "ou_xxx",
+  "businessOwnerOpenId": "ou_xxx",
+  "keyAliases": ["eval-api", "eval-batch"]
+}
