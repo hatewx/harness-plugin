@@ -1,4 +1,4 @@
-/** 从飞书姓名定位 Cursor 邮箱，移除团队成员并回写离职状态。 */
+/** 从飞书姓名定位 Cursor 邮箱，核验后台移除结果并回写离职状态。 */
 import { execFile } from 'node:child_process'
 import { parseArgs, promisify } from 'node:util'
 import { loadLocalEnvFile } from './env.ts'
@@ -123,14 +123,6 @@ export async function activeMember(email: string, call: Cursor): Promise<Json | 
   return members[0]
 }
 
-/** 已移除时可重跑；成功响应之后仍需查询确认成员不再有效。 */
-export async function removeCursorMember(email: string, call: Cursor): Promise<void> {
-  if (!(await activeMember(email, call))) return
-  const response = await call('/teams/remove-member', { email })
-  if (response.success !== true) throw new Error('Cursor 未确认移除成功')
-  if (await activeMember(email, call)) throw new Error('Cursor 成员仍然有效，停止回写状态')
-}
-
 /** 仅在成员移除确认后调用，回写已离职并再次读取验证。 */
 export async function markDeparted(employee: Employee, call: Lark): Promise<void> {
   const current = await recheckEmployee(employee, call)
@@ -141,7 +133,7 @@ export async function markDeparted(employee: Employee, call: Lark): Promise<void
   if ((await recheckEmployee(employee, call)).status !== '已离职') throw new Error('飞书状态回写未生效')
 }
 
-/** Cursor 单项离职入口，默认预览，移除确认后才回写此表状态。 */
+/** Cursor 单项离职入口，默认预览，后台移除经核验后才回写此表状态。 */
 async function main(): Promise<void> {
   loadLocalEnvFile()
   const { values } = parseArgs({ options: {
@@ -162,7 +154,9 @@ async function main(): Promise<void> {
   console.log(JSON.stringify({ ...employee, cursorMember: !!member, execute: !!values.execute }, undefined, 2))
   if (!values.execute) return
   await recheckEmployee(employee, lark)
-  await removeCursorMember(employee.email, cursor)
+  if (await activeMember(employee.email, cursor)) {
+    throw new Error(`Cursor 成员 ${employee.email} 仍有效；请用 computer use 在管理后台移除，确认后重跑 --execute`)
+  }
   await markDeparted(employee, lark)
   console.log(`Cursor 离职处理完成：${employee.name}`)
 }

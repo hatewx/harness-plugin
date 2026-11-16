@@ -11,7 +11,7 @@ Cursor 单项入口：`scripts/offboarding/cursor.ts`。
 3. 从 soulforge 解析 PineRouter userid；精确匹配为零时自动查询唯一的本地历史映射，再按姓名或 Cursor 邮箱精确反查 PineRouter 用户表。所有来源均为零时视为未开通 PineRouter；任何来源出现歧义时停止。也可显式使用 `--local-mapping` 或指定 `--userid`。
 4. 用 Cursor 管理 Key 只读查询团队成员，按邮箱精确匹配，识别 `isRemoved` 状态；同时预览 PineRouter Key 数量。
 5. 默认只输出预览。显式 `--execute` 后再次核对记录身份，执行 PineRouter Key 删除和残留检查。
-6. 使用 Cursor `POST /teams/remove-member` 按邮箱移除成员。要求返回 `success: true`，再查询确认该邮箱没有有效成员。已移除或不在该团队时跳过移除。
+6. 使用 computer use 在 Cursor 管理后台按已核对邮箱移除成员，并在后台复查；重跑 `--execute` 后，脚本只读查询确认该邮箱没有有效成员。
 7. 再检查 PineRouter 没有残留，然后将同一飞书记录的状态更新为“已离职”，读取验证结果。
 
 Cursor 单项入口执行 1、2、4、6、7 中的 Cursor 与飞书部分，不查询或修改 PineRouter。该表用于 Cursor 账号管理，单项入口中的“已离职”仅说明 Cursor 项完成；如需两项均完成，请使用总入口。
@@ -29,11 +29,11 @@ Cursor 单项入口执行 1、2、4、6、7 中的 Cursor 与飞书部分，不�
 - Email：`fld1wK0tf1`
 - 状态：`fldUyKVDhr`
 
-脚本维护于 harness-plugin；从调用方配置目录（当前为 llm-gateway 根目录）执行。直接运行时将 SKILL_DIR 设为当前技能目录绝对路径。入口自动读取 `.env.local`，文件中的配置优先于已有进程环境变量，避免终端残留的旧凭据覆盖本地配置。Cursor Key 存放在 `CURSOR_API_KEY`；文件已被 Git 忽略，不要提交实际凭据。
+脚本维护于本技能目录；从调用方配置目录（当前为 pinerouter 根目录）执行。直接运行时将 SKILL_DIR 设为当前技能目录绝对路径。入口自动读取 `.env.local`，文件中的配置优先于已有进程环境变量，避免终端残留的旧凭据覆盖本地配置。Cursor Key 存放在 `CURSOR_API_KEY`；文件已被 Git 忽略，不要提交实际凭据。
 
 总入口还需 `PINE_ROUTER_BASE_URL`、`PINE_ROUTER_ADMIN_KEY`；在线查用户需 `SOULFORGE_TOKEN`。实际执行总入口时需 `PINE_ROUTER_OPERATOR` 作为审计操作者。飞书操作复用 `lark-cli` 已授权的 user 身份，不读取或复制飞书登录 Token。
 
-Cursor 使用 [官方 Admin API](https://cursor.com/docs/account/teams/admin-api#remove-team-member)，Basic Auth 的用户名是 API Key，密码为空。官方文档注明移除成员仅限 Enterprise。成员列表通过 `GET /teams/members` 读取。
+Cursor 管理 Key 仅用于只读查询 `GET /teams/members`，Basic Auth 的用户名是 API Key，密码为空。当前团队无 Enterprise 权限，不调用移除接口；成员移除通过管理后台完成。
 
 先停用员工登录权限，避免 PineRouter 自动重新生成 Key。本脚本不负责 soulforge 停用。
 
@@ -51,7 +51,7 @@ pnpm offboard --username '员工姓名'
 pnpm offboard --username '员工姓名' --local-mapping
 ```
 
-核对身份后执行总流程：
+核对身份后执行总流程。若 Cursor 成员仍有效，脚本会在 PineRouter 清理后停止；用 computer use 在后台移除成员，再重跑同一命令完成飞书状态回写：
 
 ```sh
 pnpm offboard --username '员工姓名' --userid '已核对的userid' --execute
@@ -63,7 +63,7 @@ pnpm offboard --username '员工姓名' --userid '已核对的userid' --execute
 pnpm offboard:cursor --username '员工姓名'
 ```
 
-仅执行 Cursor 离职并回写该账号表：
+Cursor 后台已移除成员后，核验并回写该账号表：
 
 ```sh
 pnpm offboard:cursor --username '员工姓名' --execute
@@ -75,8 +75,6 @@ pnpm offboard:cursor --username '员工姓名' --execute
 pnpm test:offboarding
 ```
 
-## 本次验证
+## 验证
 
-已只读核对字段和徐千伟的姓名邮箱映射。提供的 Cursor API Key 调用 `/teams/members` 返回 HTTP 401，当前尚不能确认该凭据的团队成员读取及移除权限。总流程只读试运行在 Cursor 认证处失败，没有发送任何删除或状态更新请求。
-
-模拟测试覆盖预览无写入、顺序执行、认证失败先于写入、PineRouter 失败、Cursor 移除未生效、状态回写未生效、成员已移除、姓名歧义和身份变化。
+模拟测试覆盖预览无写入、认证失败先于写入、PineRouter 失败、后台未移除时阻止回写、后台已移除后回写、状态回写未生效、姓名歧义和身份变化。

@@ -4,7 +4,7 @@ import { mkdtempSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { test } from 'node:test'
-import { activeMember, employeeFromResponse, normalizeEmail, removeCursorMember, type Cursor, type Lark } from './cursor.ts'
+import { activeMember, employeeFromResponse, normalizeEmail, type Cursor, type Lark } from './cursor.ts'
 import { loadLocalEnvFile } from './env.ts'
 import { findPineRouterUserId, resolveOffboardingUser, runOffboarding } from './offboard-user.ts'
 import type { Gateway } from '../pinerouter/offboard-user.ts'
@@ -16,10 +16,10 @@ function record(status = '有效', name = '测试员工') {
 }
 
 /** 创建记录所有写入步骤的内存接口。 */
-function fixture(options: { cursorFails?: boolean; removalFails?: boolean; pineFails?: boolean; statusFails?: boolean;
+function fixture(options: { cursorFails?: boolean; cursorRemoved?: boolean; pineFails?: boolean; statusFails?: boolean;
   missingEmployee?: boolean } = {}) {
   const writes: string[] = []
-  let status = '有效', removed = false, keyDeleted = false
+  let status = '有效', keyDeleted = false
   const lark: Lark = async (args) => {
     if (args[0] === '+field-list') return { fields: [
       { id: 'fldL9KauoN', name: 'Name', type: 'text' }, { id: 'fld1wK0tf1', name: 'Email', type: 'text' },
@@ -36,15 +36,9 @@ function fixture(options: { cursorFails?: boolean; removalFails?: boolean; pineF
     }
     return record(status)
   }
-  const cursor: Cursor = async (route, data) => {
+  const cursor: Cursor = async () => {
     if (options.cursorFails) throw new Error('Cursor HTTP 401')
-    if (route === '/teams/remove-member') {
-      assert.deepEqual(data, { email: 'user@example.com' })
-      writes.push('cursor')
-      removed = !options.removalFails
-      return { success: true }
-    }
-    return { teamMembers: [{ id: 'user-test', email: 'user@example.com', isRemoved: removed }] }
+    return { teamMembers: [{ id: 'user-test', email: 'user@example.com', isRemoved: !!options.cursorRemoved }] }
   }
   const gateway: Gateway = async (_, data) => {
     if (_.startsWith('/user/list')) return { users: [], total_pages: 1 }
@@ -127,10 +121,10 @@ test('默认预览不执行任何写入', async () => {
   assert.deepEqual(writes, [])
 })
 
-test('总流程按 PineRouter、Cursor、飞书状态顺序执行', async () => {
-  const { writes, deps } = fixture()
+test('后台已移除 Cursor 后才回写飞书状态', async () => {
+  const { writes, deps } = fixture({ cursorRemoved: true })
   await runOffboarding('测试员工', true, deps)
-  assert.deepEqual(writes, ['pine', 'cursor', 'status'])
+  assert.deepEqual(writes, ['pine', 'status'])
 })
 
 test('Cursor 认证失败在所有写入之前终止', async () => {
@@ -145,25 +139,15 @@ test('PineRouter 删除失败不继续操作 Cursor 或表格', async () => {
   assert.deepEqual(writes, ['pine'])
 })
 
-test('Cursor 移除后仍有效时不回写状态', async () => {
-  const { writes, deps } = fixture({ removalFails: true })
-  await assert.rejects(runOffboarding('测试员工', true, deps), /仍然有效/)
-  assert.deepEqual(writes, ['pine', 'cursor'])
+test('Cursor 仍有效时提示后台移除且不回写状态', async () => {
+  const { writes, deps } = fixture()
+  await assert.rejects(runOffboarding('测试员工', true, deps), /仍有效；请用 computer use/)
+  assert.deepEqual(writes, ['pine'])
 })
 
 test('状态写入未生效不能报告成功', async () => {
-  const { deps } = fixture({ statusFails: true })
+  const { deps } = fixture({ statusFails: true, cursorRemoved: true })
   await assert.rejects(runOffboarding('测试员工', true, deps), /未生效/)
-})
-
-test('已经移除的成员不再发送移除请求', async () => {
-  const routes: string[] = []
-  const cursor: Cursor = async (route) => {
-    routes.push(route)
-    return { teamMembers: [{ email: 'user@example.com', isRemoved: true }] }
-  }
-  await removeCursorMember('user@example.com', cursor)
-  assert.deepEqual(routes, ['/teams/members'])
 })
 
 test('相同邮箱的多个有效成员阻止操作', async () => {

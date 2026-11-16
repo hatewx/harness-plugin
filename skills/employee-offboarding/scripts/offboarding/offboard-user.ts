@@ -3,7 +3,7 @@ import { homedir } from 'node:os'
 import { join } from 'node:path'
 import { parseArgs } from 'node:util'
 import { offboard, ownedKeys, requiredEnv, requestJson, resolveUser, type Gateway } from '../pinerouter/offboard-user.ts'
-import { activeMember, createCursor, findEmployee, lark, markDeparted, recheckEmployee, removeCursorMember,
+import { activeMember, createCursor, findEmployee, lark, markDeparted, recheckEmployee,
   type Cursor, type Lark } from './cursor.ts'
 import { loadLocalEnvFile } from './env.ts'
 
@@ -71,7 +71,9 @@ export async function runOffboarding(name: string, execute: boolean, deps: Depen
   if (!execute) return
   employee && await recheckEmployee(employee, deps.lark)
   userid && await offboard(userid, deps.gateway, true)
-  employee && await removeCursorMember(employee.email, deps.cursor)
+  if (employee && await activeMember(employee.email, deps.cursor)) {
+    throw new Error(`Cursor 成员 ${employee.email} 仍有效；请用 computer use 在管理后台移除，确认后重跑 --execute`)
+  }
   if (userid && (await ownedKeys(userid, deps.gateway)).size) {
     throw new Error('PineRouter 出现残留或重新生成的 Key，停止回写状态')
   }
